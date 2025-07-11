@@ -1,2 +1,2 @@
 # TimezoneBot
-A discord bot for converting timezones
+A discord bot for converting timezones in messages
