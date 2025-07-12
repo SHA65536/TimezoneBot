@@ -54,6 +54,9 @@ func TestTimeParser_ParseTimeFromMessage(t *testing.T) {
 		{"time with am context", "I'll be there at 6 am sharp", 21600, false},
 		{"time with 24-hour context", "Flight departs at 18:00", 64800, false},
 
+		// Some edge cases
+		{"priority of first match", "19:0519:05am", 68700, false},
+
 		// Error cases
 		{"invalid hour 24-hour", "24:00", 0, true},
 		{"invalid minute 24-hour", "12:60", 0, true},

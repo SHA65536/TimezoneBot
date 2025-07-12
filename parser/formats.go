@@ -26,14 +26,14 @@ var (
 	// Format24Hour represents 24-hour format: 18:00, 18:30, 09:15, etc.
 	Format24Hour = TimeFormat{
 		Name:    "24-hour format",
-		Regex:   regexp.MustCompile(`\b(\d{1,2})\s*:\s*(\d{2})\b`),
+		Regex:   regexp.MustCompile(`\b(\d{1,2})\s*:\s*(\d{2})`),
 		Handler: parse24HourFormat,
 	}
 
 	// FormatMilitary represents military time format: 1542, 0900, 2359, etc.
 	FormatMilitary = TimeFormat{
 		Name:    "military time",
-		Regex:   regexp.MustCompile(`\b(\d{4})\b`),
+		Regex:   regexp.MustCompile(`(?:^|\s|\b)(\d{4})(?:$|\s|\b)`),
 		Handler: parseMilitaryTime,
 	}
 
@@ -50,8 +50,8 @@ func getDefaultFormats() []TimeFormat {
 	return []TimeFormat{
 		Format12Hour,
 		Format24Hour,
-		FormatMilitary,
 		FormatSimpleHour,
+		FormatMilitary,
 	}
 }
 
@@ -114,6 +114,7 @@ func parse24HourFormat(matches []string, msg string) (uint, error) {
 
 // parseMilitaryTime parses military time format: 1542, 0900, 2359, etc.
 func parseMilitaryTime(matches []string, _ string) (uint, error) {
+	// For the new regex, group 1 is the actual time
 	timeStr := matches[1]
 	if len(timeStr) != 4 {
 		return 0, fmt.Errorf("invalid military time format: %s", timeStr)
