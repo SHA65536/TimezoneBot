@@ -127,7 +127,7 @@ func TestNewTimeParserWithFormats(t *testing.T) {
 		},
 	}
 
-	tp := NewTimeParserWithFormats(customFormats)
+	tp := NewTimeParserWithFormats(customFormats...)
 
 	// Should parse 24-hour format
 	seconds, err := tp.ParseTimeFromMessage("18:00")

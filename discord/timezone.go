@@ -28,7 +28,6 @@ func RegisterTimezoneCommand(s *discordgo.Session, db *database.Queries) error {
 		},
 	}
 
-	fmt.Println(s.State.User)
 	_, err := s.ApplicationCommandCreate(s.State.User.ID, "", command)
 	if err != nil {
 		return fmt.Errorf("cannot create slash command: %w", err)

@@ -16,14 +16,12 @@ var cooldownTable = map[string]time.Time{}
 var cooldownLock sync.RWMutex
 
 func RegisterConvertHandler(s *discordgo.Session, db *database.Queries) error {
-	var tp = parser.NewTimeParser()
+	var tp = parser.NewTimeParserWithFormats(parser.Format24Hour, parser.Format12Hour, parser.FormatSimpleHour)
 
 	s.AddHandler(func(s *discordgo.Session, m *discordgo.MessageCreate) {
 		if m.Author.ID == s.State.User.ID {
 			return
 		}
-
-		fmt.Println(m.Content)
 
 		// Try to parse time from the message
 		if _, err := tp.ParseTimeFromMessage(m.Content); err != nil {

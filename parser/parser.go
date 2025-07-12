@@ -32,7 +32,7 @@ func NewTimeParser() *TimeParser {
 }
 
 // NewTimeParserWithFormats creates a new TimeParser with custom formats
-func NewTimeParserWithFormats(formats []TimeFormat) *TimeParser {
+func NewTimeParserWithFormats(formats ...TimeFormat) *TimeParser {
 	return &TimeParser{
 		formats: formats,
 	}
