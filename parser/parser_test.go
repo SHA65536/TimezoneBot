@@ -56,6 +56,7 @@ func TestTimeParser_ParseTimeFromMessage(t *testing.T) {
 		{"invalid military time", "2500", 0, true},
 		{"invalid military time format", "123", 0, true},
 		{"no time in message", "Hello world", 0, true},
+		{"just a number", "i ate 3 donuts", 0, true},
 		{"empty message", "", 0, true},
 	}
 

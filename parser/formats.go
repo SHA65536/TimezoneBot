@@ -40,7 +40,7 @@ var (
 	// FormatSimpleHour represents simple hour format: 6, 18, etc.
 	FormatSimpleHour = TimeFormat{
 		Name:    "simple hour",
-		Regex:   regexp.MustCompile(`\b(\d{1,2})\s*(?:o'clock|oclock|oc|o'c)?\b`),
+		Regex:   regexp.MustCompile(`\b(\d{1,2})\s*(?:o'clock|oclock|oc|o'c)\b`),
 		Handler: parseSimpleHour,
 	}
 )
