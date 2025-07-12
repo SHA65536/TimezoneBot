@@ -3,12 +3,17 @@ package discord
 import (
 	"context"
 	"fmt"
+	"math/rand"
+	"sync"
 	"time"
 
 	"github.com/SHA65536/TimezoneBot/database"
 	"github.com/SHA65536/TimezoneBot/parser"
 	"github.com/bwmarrin/discordgo"
 )
+
+var cooldownTable = map[string]time.Time{}
+var cooldownLock sync.RWMutex
 
 func RegisterConvertHandler(s *discordgo.Session, db *database.Queries) error {
 	var tp = parser.NewTimeParser()
@@ -31,6 +36,11 @@ func RegisterConvertHandler(s *discordgo.Session, db *database.Queries) error {
 		}
 
 		fmt.Println(s.MessageReactionAdd(m.ChannelID, m.ID, "⏰"))
+
+		// Clean cooldowns every once in a while (too lazy to write a cronjob)
+		if rand.Intn(1000) == 0 {
+			cleancooldown()
+		}
 	})
 
 	s.AddHandler(func(s *discordgo.Session, m *discordgo.MessageReactionAdd) {
@@ -56,6 +66,14 @@ func RegisterConvertHandler(s *discordgo.Session, db *database.Queries) error {
 			return
 		}
 
+		// Check cooldown
+		cooldownLock.RLock()
+		if time.Since(cooldownTable[msg.ID]) < 10*time.Minute {
+			cooldownLock.RUnlock()
+			return
+		}
+		cooldownLock.RUnlock()
+
 		// Load the user's timezone
 		userLoc, err := time.LoadLocation(userTimezone)
 		if err != nil {
@@ -73,7 +91,7 @@ func RegisterConvertHandler(s *discordgo.Session, db *database.Queries) error {
 		unixTimestamp := utcTime.Unix()
 		timeMessage := fmt.Sprintf("<t:%d:t>", unixTimestamp)
 
-		_, _ = s.ChannelMessageSendComplex(m.ChannelID, &discordgo.MessageSend{
+		_, err = s.ChannelMessageSendComplex(m.ChannelID, &discordgo.MessageSend{
 			Content: timeMessage,
 			Reference: &discordgo.MessageReference{
 				MessageID: msg.ID,
@@ -84,7 +102,24 @@ func RegisterConvertHandler(s *discordgo.Session, db *database.Queries) error {
 				Parse: []discordgo.AllowedMentionType{},
 			},
 		})
+
+		if err == nil {
+			cooldownLock.Lock()
+			cooldownTable[msg.ID] = time.Now()
+			cooldownLock.Unlock()
+		}
 	})
 
 	return nil
+}
+
+func cleancooldown() {
+	var newTable = map[string]time.Time{}
+	cooldownLock.Lock()
+	defer cooldownLock.Unlock()
+	for id, t := range cooldownTable {
+		if time.Since(t) < 10*time.Minute {
+			newTable[id] = t
+		}
+	}
 }
