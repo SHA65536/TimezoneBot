@@ -17,18 +17,24 @@ func TestTimeParser_ParseTimeFromMessage(t *testing.T) {
 		{"24-hour format with leading zero", "09:15", 33300, false},
 		{"24-hour format midnight", "00:00", 0, false},
 		{"24-hour format end of day", "23:59", 86340, false},
+		{"24-hour format with spaces", "18 : 00", 64800, false},
+		{"24-hour format with leading zero and spaces", "09 : 15", 33300, false},
 
 		// Valid 12-hour format tests
 		{"12-hour am", "6 am", 21600, false},
 		{"12-hour pm", "6 pm", 64800, false},
 		{"12-hour with minutes am", "6:30 am", 23400, false},
 		{"12-hour with minutes pm", "6:30 pm", 66600, false},
+		{"12-hour with minutes am", "6 : 30 am", 23400, false},
+		{"12-hour with minutes pm", "6 : 30 pm", 66600, false},
 		{"12-hour 12 am", "12 am", 0, false},
 		{"12-hour 12 pm", "12 pm", 43200, false},
 		{"12-hour 12:30 am", "12:30 am", 1800, false},
 		{"12-hour 12:30 pm", "12:30 pm", 45000, false},
 		{"12-hour 12:30pm", "12:30pm", 45000, false},
 		{"12-hour 12:30am", "12:30am", 1800, false},
+		{"12-hour 12 : 30pm", "12 : 30pm", 45000, false},
+		{"12-hour 12 : 30am", "12 : 30am", 1800, false},
 
 		// Valid military time tests
 		{"military time", "1542", 56520, false},
@@ -113,7 +119,7 @@ func TestNewTimeParserWithFormats(t *testing.T) {
 	customFormats := []TimeFormat{
 		{
 			Name:    "24-hour format",
-			Regex:   regexp.MustCompile(`\b(\d{1,2}):(\d{2})\b`),
+			Regex:   regexp.MustCompile(`\b(\d{1,2})\s*:\s*(\d{2})\b`),
 			Handler: parse24HourFormat,
 		},
 	}
