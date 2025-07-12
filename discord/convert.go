@@ -103,7 +103,7 @@ func RegisterConvertHandler(s *discordgo.Session, db *database.Queries) error {
 			},
 		})
 
-		if err != nil {
+		if err == nil {
 			cooldownLock.Lock()
 			cooldownTable[msg.ID] = time.Now()
 			cooldownLock.Unlock()
