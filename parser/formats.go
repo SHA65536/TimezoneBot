@@ -19,14 +19,14 @@ var (
 	// Format12Hour represents 12-hour format with am/pm: 6 am, 6:30 pm, 12:45 am, etc.
 	Format12Hour = TimeFormat{
 		Name:    "12-hour with am/pm",
-		Regex:   regexp.MustCompile(`\b(\d{1,2})(?::(\d{2}))?\s*(am|pm)\b`),
+		Regex:   regexp.MustCompile(`\b(\d{1,2})(?:\s*:\s*(\d{2}))?\s*(am|pm)\b`),
 		Handler: parse12HourFormat,
 	}
 
 	// Format24Hour represents 24-hour format: 18:00, 18:30, 09:15, etc.
 	Format24Hour = TimeFormat{
 		Name:    "24-hour format",
-		Regex:   regexp.MustCompile(`\b(\d{1,2}):(\d{2})\b`),
+		Regex:   regexp.MustCompile(`\b(\d{1,2})\s*:\s*(\d{2})\b`),
 		Handler: parse24HourFormat,
 	}
 
