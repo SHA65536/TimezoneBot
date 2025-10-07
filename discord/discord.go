@@ -23,7 +23,7 @@ func MakeDiscordServer(token string, db *database.Queries) (*DiscordServer, erro
 		return nil, fmt.Errorf("failed to create Discord session: %w", err)
 	}
 
-	dg.Identify.Intents = discordgo.IntentsGuildMessages | discordgo.IntentsGuildMessageReactions
+	dg.Identify.Intents = discordgo.IntentsGuildMessages | discordgo.IntentsGuildMessageReactions | discordgo.IntentsGuildVoiceStates
 
 	return &DiscordServer{
 		session: dg,
@@ -44,6 +44,14 @@ func (s *DiscordServer) Start() error {
 
 	if err := RegisterConvertHandler(s.session, s.db); err != nil {
 		return fmt.Errorf("failed to register convert handler: %w", err)
+	}
+
+	if err := RegisterStreamsHandler(s.session, s.db); err != nil {
+		return fmt.Errorf("failed to register streams handler: %w", err)
+	}
+
+	if err := RegisterStreamsAlertCommand(s.session, s.db); err != nil {
+		return fmt.Errorf("failed to register streams alert command: %w", err)
 	}
 
 	fmt.Println("Bot is now running.")

@@ -3,7 +3,7 @@ module github.com/SHA65536/TimezoneBot
 go 1.24.0
 
 require (
-	github.com/bwmarrin/discordgo v0.27.1
+	github.com/bwmarrin/discordgo v0.29.0
 	github.com/jackc/pgx/v5 v5.7.5
 	github.com/joho/godotenv v1.5.1
 	github.com/pressly/goose/v3 v3.24.3
