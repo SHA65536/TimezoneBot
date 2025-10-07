@@ -49,7 +49,7 @@ func RegisterStreamsAlertCommand(s *discordgo.Session, db *database.Queries) err
 			}
 		}
 
-		perms, err := s.State.UserChannelPermissions(i.Member.User.ID, channelID.ID)
+		perms, err := s.UserChannelPermissions(i.Member.User.ID, channelID.ID)
 		if err != nil {
 			fmt.Println("Error getting user channel permissions:", err)
 			s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
