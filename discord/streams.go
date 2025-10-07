@@ -112,7 +112,7 @@ func RegisterStreamsHandler(s *discordgo.Session, db *database.Queries) error {
 			cleanstreamcooldown()
 		}
 
-		if !vs.VoiceState.SelfStream {
+		if !vs.VoiceState.SelfStream && vs.ChannelID != "" {
 			fmt.Println("not streaming")
 			return
 		}
