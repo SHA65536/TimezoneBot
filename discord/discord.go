@@ -23,7 +23,7 @@ func MakeDiscordServer(token string, db *database.Queries) (*DiscordServer, erro
 		return nil, fmt.Errorf("failed to create Discord session: %w", err)
 	}
 
-	dg.Identify.Intents = discordgo.IntentsGuildMessages | discordgo.IntentsGuildMessageReactions
+	dg.Identify.Intents = discordgo.IntentsGuildMessages | discordgo.IntentsGuildMessageReactions | discordgo.IntentsGuildVoiceStates
 
 	return &DiscordServer{
 		session: dg,
