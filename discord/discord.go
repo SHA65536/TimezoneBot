@@ -46,6 +46,14 @@ func (s *DiscordServer) Start() error {
 		return fmt.Errorf("failed to register convert handler: %w", err)
 	}
 
+	if err := RegisterStreamsHandler(s.session, s.db); err != nil {
+		return fmt.Errorf("failed to register streams handler: %w", err)
+	}
+
+	if err := RegisterStreamsAlertCommand(s.session, s.db); err != nil {
+		return fmt.Errorf("failed to register streams alert command: %w", err)
+	}
+
 	fmt.Println("Bot is now running.")
 	return nil
 }
