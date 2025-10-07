@@ -137,9 +137,8 @@ func RegisterStreamsHandler(s *discordgo.Session, db *database.Queries) error {
 		}
 
 		_, err = s.ChannelMessageSendComplex(alertChannel, &discordgo.MessageSend{
-			Content: "OMG A STREAM HAS STARTED",
 			Embed: &discordgo.MessageEmbed{
-				Title:       "Stream started",
+				Title:       "OMG A STREAM HAS STARTED",
 				Description: "Stream started in <#" + vs.ChannelID + "> by " + vs.Member.Mention(),
 				Color:       0x0099ff,
 			},
