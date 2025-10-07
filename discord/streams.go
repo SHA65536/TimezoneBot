@@ -106,22 +106,26 @@ var streamCooldownLock sync.RWMutex
 
 func RegisterStreamsHandler(s *discordgo.Session, db *database.Queries) error {
 	s.AddHandler(func(s *discordgo.Session, vs *discordgo.VoiceStateUpdate) {
+		fmt.Println("Voice state update:", vs)
 
 		if rand.Intn(1000) == 0 {
 			cleanstreamcooldown()
 		}
 
 		if !vs.VoiceState.SelfStream {
+			fmt.Println("not streaming")
 			return
 		}
 
 		if b, err := db.IsStreamAlertEnabled(context.Background(), vs.GuildID); err != nil || !b {
+			fmt.Println("stream alert not enabled")
 			return
 		}
 
 		streamCooldownLock.RLock()
 		if time.Since(streamCooldownTable[vs.UserID]) < 10*time.Minute {
 			streamCooldownLock.RUnlock()
+			fmt.Println("stream cooldown not expired")
 			return
 		}
 		streamCooldownLock.RUnlock()
