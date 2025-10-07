@@ -52,15 +52,18 @@ func RegisterStreamsAlertCommand(s *discordgo.Session, db *database.Queries) err
 			})
 			return
 		}
-		isAdmin := false
-		for _, roleID := range member.Roles {
-			role, err := s.State.Role(i.GuildID, roleID)
-			if err == nil && (role.Permissions&discordgo.PermissionAdministrator) != 0 {
-				isAdmin = true
-				break
-			}
+		perms, err := s.State.UserChannelPermissions(i.Member.User.ID, i.ChannelID)
+		if err != nil {
+			s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+				Type: discordgo.InteractionResponseChannelMessageWithSource,
+				Data: &discordgo.InteractionResponseData{
+					Content: "Could not verify your permissions.",
+					Flags:   discordgo.MessageFlagsEphemeral,
+				},
+			})
+			return
 		}
-		if !isAdmin {
+		if perms&discordgo.PermissionAdministrator != 0 {
 			s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 				Type: discordgo.InteractionResponseChannelMessageWithSource,
 				Data: &discordgo.InteractionResponseData{
