@@ -41,15 +41,15 @@ func RegisterStreamsAlertCommand(s *discordgo.Session, db *database.Queries) err
 			return
 		}
 
-		var channelID string
+		var channelID *discordgo.Channel
 		for _, opt := range i.ApplicationCommandData().Options {
 			if opt.Name == "channel" {
-				channelID = opt.StringValue()
+				channelID = opt.ChannelValue(s)
 				break
 			}
 		}
 
-		perms, err := s.State.UserChannelPermissions(i.Member.User.ID, channelID)
+		perms, err := s.State.UserChannelPermissions(i.Member.User.ID, channelID.ID)
 		if err != nil {
 			fmt.Println("Error getting user channel permissions:", err)
 			s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
@@ -75,7 +75,7 @@ func RegisterStreamsAlertCommand(s *discordgo.Session, db *database.Queries) err
 
 		err = db.SetAlertChannel(context.Background(), database.SetAlertChannelParams{
 			GuildID:      i.GuildID,
-			AlertChannel: channelID,
+			AlertChannel: channelID.ID,
 		})
 		if err != nil {
 			fmt.Println("Error setting stream alert channel:", err)
